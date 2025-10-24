@@ -20,19 +20,29 @@ RANDOM_SEED = 42
 @st.cache_data
 def load_data():
     """
-    Loads the Pima Indians Diabetes dataset. In a real deployment, 
-    you would load this from a local file, cloud storage, or database.
-    We use a public link for a self-contained, runnable example.
+    Loads the Pima Indians Diabetes dataset from a local file.
+    Ensure 'diabetes.csv' is in the same directory as app.py when running Streamlit.
     """
-    # CORRECTED URL: Using a more stable GitHub mirror for the dataset.
-    DATA_URL ="C:\Users\Arun kumar\Downloads\boosting diabetes xgb\diabetes.csv"
+    FILE_NAME = 'diabetes.csv'
     try:
-        # Note: Removed skiprows=1 as the new source file does not have a header.
-        data = pd.read_csv(DATA_URL,
-                           names=['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age', 'Outcome'])
+        # Load the CSV. The user's uploaded file has a header, so we rely on that.
+        data = pd.read_csv(FILE_NAME)
+        # We ensure the column names match the expected list, as the user's uploaded file 
+        # includes the header row, making manual naming unnecessary.
+        
+        # Simple check for necessary columns to prevent downstream errors
+        required_cols = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age', 'Outcome']
+        if not all(col in data.columns for col in required_cols):
+             st.error(f"Error: The file '{FILE_NAME}' is missing expected column headers. Please check the CSV file.")
+             return pd.DataFrame()
+             
+    except FileNotFoundError:
+        st.error(f"Error: The file '{FILE_NAME}' was not found. Please ensure it is in the same directory as 'app.py' when you run Streamlit.")
+        return pd.DataFrame()
     except Exception as e:
-        st.error(f"Could not load data. Please ensure 'pima-indians-diabetes.csv' is available. Error: {e}")
-        return pd.DataFrame() # Return empty DataFrame on failure
+        st.error(f"Could not load data from '{FILE_NAME}'. An unexpected error occurred: {e}")
+        return pd.DataFrame()
+    
     return data
 
 @st.cache_resource
@@ -42,6 +52,7 @@ def train_model(data):
     matching the logic in your notebook.
     """
     if data.empty:
+        # Check added due to robust error handling in load_data
         return None, None
 
     # Create a copy to perform preprocessing
