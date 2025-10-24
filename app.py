@@ -25,7 +25,7 @@ def load_data():
     We use a public link for a self-contained, runnable example.
     """
     # CORRECTED URL: Using a more stable GitHub mirror for the dataset.
-    DATA_URL = "https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.csv"
+    DATA_URL ="C:\Users\Arun kumar\Downloads\boosting diabetes xgb\diabetes.csv"
     try:
         # Note: Removed skiprows=1 as the new source file does not have a header.
         data = pd.read_csv(DATA_URL,
