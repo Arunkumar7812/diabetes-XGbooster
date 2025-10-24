@@ -24,8 +24,11 @@ def load_data():
     you would load this from a local file, cloud storage, or database.
     We use a public link for a self-contained, runnable example.
     """
+    # CORRECTED URL: Using a more stable GitHub mirror for the dataset.
+    DATA_URL = "https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.csv"
     try:
-        data = pd.read_csv("https://raw.githubusercontent.com/plotly/datasets/master/pima-indians-diabetes.csv", skiprows=1,
+        # Note: Removed skiprows=1 as the new source file does not have a header.
+        data = pd.read_csv(DATA_URL,
                            names=['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age', 'Outcome'])
     except Exception as e:
         st.error(f"Could not load data. Please ensure 'pima-indians-diabetes.csv' is available. Error: {e}")
